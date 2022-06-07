@@ -1,0 +1,27 @@
+body{
+	margin: 0;
+	padding: 16px;
+}
+
+textarea{
+	width:360px;
+	height:90px;
+}
+
+table{
+	background: #000;
+}
+
+th,td{
+	background: #fff;
+}
+
+b{
+	color: #fff;
+	background: #000;
+}
+
+#showInfoArea{
+	overflow: scroll;
+	font-family: courier;
+}
