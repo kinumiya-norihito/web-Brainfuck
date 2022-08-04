@@ -126,7 +126,7 @@ window.onload = () => {
 		outArea.value = '';
 		showInfoArea.innerHTML = '';
 		nocInput.innerHTML = bfcode.length;
-		novcInput.innerHTML = bfcode.replace(/[^+-><\[\]]+/g,'').length;
+		novcInput.innerHTML = bfcode.replace(/[^+,\-.<>\[\]]+/g,'').length;
 		intervalId&&clearInterval(intervalId);
 		showInfo();
 	};
