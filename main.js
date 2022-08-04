@@ -5,7 +5,8 @@ window.onload = () => {
 	bfcode,
 	cp,
 	lv,
-	strin;
+	strin,
+	intervalId;
 	const
 	//定数など
 	//element
@@ -16,6 +17,8 @@ window.onload = () => {
 	runButton = document.getElementById('runButton'),
 	stepButton = document.getElementById('stepButton'),
 	resetButton = document.getElementById('resetButton'),
+	cycleButton = document.getElementById('cycleButton'),
+	cpsInput = document.getElementById('cpsInput'),
 	//関数
 	run = (n) => {
 		const f = () => {
@@ -28,6 +31,7 @@ window.onload = () => {
 			}
 		};
 		for(let i = 0; i < n; i++){
+			if(tp<0)return;
 			if(!bfcode[cp])return;
 			bftape[tp] = bftape[tp] || 0;
 			switch(bfcode[cp]){
@@ -94,6 +98,7 @@ window.onload = () => {
 					break;
 				case ':':
 					cp++;
+					intervalId&&clearInterval(intervalId);
 					return;
 			}
 			cp++;
@@ -103,7 +108,7 @@ window.onload = () => {
 		//ここに色々書く
 		showInfoArea.innerHTML = '';
 		for(let j = 0; j < bfcode.length; j++){
-			showInfoArea.innerHTML += (j==cp-1?'<b>':'')+bfcode[j]+(j==cp-1?'</b>':'')+(j%64==63?'<br/>':''); 
+			showInfoArea.innerHTML += (j==cp-1?'<b>':'')+bfcode[j]+(j==cp-1?'</b>':'')+(j%64==63?'<br/>':'');
 		}
 		showInfoArea.innerHTML += '<br/>[';
 		for(let j = 0; j < bftape.length; j++){
@@ -118,6 +123,7 @@ window.onload = () => {
 		strin = '';
 		outArea.value = '';
 		showInfoArea.innerHTML = '';
+		intervalId&&clearInterval(intervalId);
 		showInfo();
 	};
 
@@ -127,6 +133,10 @@ window.onload = () => {
 	maxRunInput.addEventListener('blur',()=>{
 		const x = +maxRunInput.value || 0;
 		maxRunInput.value = x<1?1000000:Math.floor(x);
+	});
+	cpsInput.addEventListener('blur',()=>{
+		const x = +cpsInput.value || 0;
+		cpsInput.value = x<10?10:Math.floor(x);
 	});
 	bfcodeArea.addEventListener('change',()=>{
 		reset();
@@ -141,5 +151,20 @@ window.onload = () => {
 	});
 	resetButton.addEventListener('click',()=>{
 		reset();
+	});
+	cycleButton.addEventListener('click',()=>{
+		let i = 0;
+		const
+		lim = +maxRunInput.value,
+		cps = +cpsInput.value;
+
+		intervalId&&clearInterval(intervalId);
+		intervalId = setInterval(()=>{
+			run(1);
+			showInfo();
+			if(i==lim){
+				clearInterval(intervalId);
+			}
+		},cps);
 	});
 };
