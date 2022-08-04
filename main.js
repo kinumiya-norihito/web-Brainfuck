@@ -19,6 +19,8 @@ window.onload = () => {
 	resetButton = document.getElementById('resetButton'),
 	cycleButton = document.getElementById('cycleButton'),
 	cpsInput = document.getElementById('cpsInput'),
+	nocInput = document.getElementById('nocInput'),
+	novcInput = document.getElementById('novcInput'),
 	//関数
 	run = (n) => {
 		const f = () => {
@@ -110,7 +112,7 @@ window.onload = () => {
 		for(let j = 0; j < bfcode.length; j++){
 			showInfoArea.innerHTML += (j==cp-1?'<b>':'')+bfcode[j]+(j==cp-1?'</b>':'')+(j%64==63?'<br/>':'');
 		}
-		showInfoArea.innerHTML += '<br/>[';
+		showInfoArea.innerHTML += '<br/><br/>[';
 		for(let j = 0; j < bftape.length; j++){
 			showInfoArea.innerHTML += (j?',':'')+(j==tp?'<b>':'')+(bftape[j]+256).toString(16).substr(1,2)+(j==tp?'</b>':'');
 		}
@@ -123,6 +125,8 @@ window.onload = () => {
 		strin = '';
 		outArea.value = '';
 		showInfoArea.innerHTML = '';
+		nocInput.innerHTML = bfcode.length;
+		novcInput.innerHTML = bfcode.replace(/[^+-><\[\]]+/g,'').length;
 		intervalId&&clearInterval(intervalId);
 		showInfo();
 	};
