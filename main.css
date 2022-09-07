@@ -3,23 +3,30 @@ body{
 	padding: 16px;
 }
 
-textarea{
-	width:360px;
-	height:90px;
+b{
+	color: #fff;
+	background: #000;
 }
+
+input{
+	text-align: right;
+}
+
 
 table{
 	background: #000;
+}
+
+textarea{
+	width:360px;
+	height:90px;
 }
 
 th,td{
 	background: #fff;
 }
 
-b{
-	color: #fff;
-	background: #000;
-}
+
 
 #showInfoArea{
 	overflow: scroll;
