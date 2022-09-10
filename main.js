@@ -110,7 +110,7 @@ window.onload = () => {
 		//ここに色々書く
 		showInfoArea.innerHTML = '';
 		for(let j = 0; j < bfcode.length; j++){
-			showInfoArea.innerHTML += (j==cp-1?'<b>':'')+bfcode[j]+(j==cp-1?'</b>':'')+(j%64==63?'<br/>':'');
+			showInfoArea.innerHTML += (j==cp-1?'<b>':'')+bfcode[j].replace(/\&|\"|\'|\<|\>/g,(match)=>{switch(match){case '&':return '&amp;';case '"':return '&quot;';case '\'':return '&#039;';case '<':return '&lt;';case '>':return '&gt;';}})+(j==cp-1?'</b>':'')+(j%64==63?'<br/>':'');
 		}
 		showInfoArea.innerHTML += '<br/><br/>[';
 		for(let j = 0; j < bftape.length; j++){
