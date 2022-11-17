@@ -6,7 +6,8 @@ window.onload = () => {
 		cp,
 		lv,
 		strin,
-		intervalId;
+		intervalId,
+		ac;
 	const
 		//定数など
 		//element
@@ -22,6 +23,7 @@ window.onload = () => {
 		nocInput = document.getElementById('nocInput'),
 		novcInput = document.getElementById('novcInput'),
 		bfco = document.getElementById('bfco'),
+		countElem = document.getElementById('count'),
 		//関数
 		run = (n) => {
 			const f = () => {
@@ -104,6 +106,7 @@ window.onload = () => {
 						intervalId && clearInterval(intervalId);
 						return;
 				}
+				ac++;
 				cp++;
 			}
 		},
@@ -118,9 +121,10 @@ window.onload = () => {
 				showInfoArea.innerHTML += (j ? ',' : '') + (j == tp ? '<b>' : '') + (bftape[j] + 256).toString(16).substr(1, 2) + (j == tp ? '</b>' : '');
 			}
 			showInfoArea.innerHTML += `]`;
+			countElem.innerHTML = ac;
 		},
 		reset = () => {
-			tp = cp = lv = 0;
+			tp = cp = lv = ac = 0;
 			bftape = new Array();
 			bfcode = bfcodeArea.value;
 			strin = '';
@@ -128,6 +132,7 @@ window.onload = () => {
 			showInfoArea.innerHTML = '';
 			nocInput.innerHTML = bfcode.length;
 			novcInput.innerHTML = bfcode.replace(/[^+,\-.<>\[\]]+/g, '').length;
+			countElem.innerHTML = '0';
 			intervalId && clearInterval(intervalId);
 			showInfo();
 		};
@@ -158,7 +163,8 @@ window.onload = () => {
 		reset();
 	});
 	bfco.addEventListener('click', () => {
-		bfcodeArea.value = bfcode.replace(/[^+,\-.<>\[\]:]+/g, '')
+		bfcodeArea.value = bfcode.replace(/[^+,\-.<>\[\]:]+/g, '');
+		reset();
 	});
 	cycleButton.addEventListener('click', () => {
 		let i = 0;
