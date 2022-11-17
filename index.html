@@ -1,46 +1,53 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8"/>
-		<title>web Brainfuck</title>
-		<link href="main.css" rel="stylesheet"/>
-		<script src="main.js"></script>
-	</head>
-	<body>
-		
-		<textarea id="bfcodeArea" placeholder="ソースコード"></textarea><br/>
-		<input type="number" id="maxRunInput" value="1000000"/>回<button id="runButton">実行</button><br/>
-		<button id="stepButton">ステップ実行</button><br/>
-		<input type="number" id="cpsInput" value="10"/><button id="cycleButton">ミリ秒ごとに実行</button><br/>
-		<textarea id="outArea" placeholder="出力"></textarea><br/>
-		<div id="showInfoArea"></div><br/>
-		<button id="resetButton">リセット</button>
-		<details>
-			<summary>
-				情報
-			</summary>
-			<table>
-				<thead>
-					<tr>
-						<th></th><td>文字数</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<th>全ての文字</th><td id="nocInput"></td>
-					</tr>
-					<tr>
-						<th>命令文字のみ</th><td id="novcInput"></td>
-					</tr>
-				</tbody>
-			</table>
-		</details>
-		<details>
-			<summary>説明など</summary>
-			<p>
-				charsetはUTF-8。
-				:はブレークポイントとして機能します。開発の際にお使いください。
-			</p>
-		</details>
-	</body>
+
+<head>
+	<meta charset="utf-8" />
+	<title>web Brainfuck</title>
+	<link href="main.css" rel="stylesheet" />
+	<script src="main.js"></script>
+</head>
+
+<body>
+	<textarea id="bfcodeArea" placeholder="ソースコード"></textarea><br />
+	<input type="number" id="maxRunInput" value="1000000" />回<button id="runButton">実行</button><span
+		id="count">0</span><br />
+	<button id="stepButton">ステップ実行</button><br />
+	<input type="number" id="cpsInput" value="10" /><button id="cycleButton">ミリ秒ごとに実行</button><br />
+	<textarea id="outArea" placeholder="出力"></textarea><br />
+	<div id="showInfoArea"></div><br />
+	<button id="resetButton">リセット</button>
+	<details>
+		<summary>
+			情報
+		</summary>
+		<table>
+			<thead>
+				<tr>
+					<th></th>
+					<td>文字数</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>全ての文字</th>
+					<td id="nocInput"></td>
+				</tr>
+				<tr>
+					<th>命令文字のみ</th>
+					<td id="novcInput"></td>
+				</tr>
+			</tbody>
+		</table>
+		<button id="bfco">命令文字以外削除(`:`含む)</button>
+	</details>
+	<details>
+		<summary>説明など</summary>
+		<p>
+			charsetはUTF-8。
+			:はブレークポイントとして機能します。開発の際にお使いください。
+		</p>
+	</details>
+</body>
+
 </html>
