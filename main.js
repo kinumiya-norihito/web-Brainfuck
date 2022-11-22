@@ -7,7 +7,9 @@ window.onload = () => {
 		lv,
 		strin,
 		intervalId,
-		ac;
+		ac,
+		is_focus = false,
+		is_meta = false;
 	const
 		//定数など
 		//element
@@ -23,9 +25,25 @@ window.onload = () => {
 		nocInput = document.getElementById('nocInput'),
 		novcInput = document.getElementById('novcInput'),
 		bfco = document.getElementById('bfco'),
+		defaultInput = document.getElementById('defaultInput'),
 		countElem = document.getElementById('count'),
 		//関数
+
+		showInfo = () => {
+			//ここに色々書く
+			showInfoArea.innerHTML = '';
+			for (let j = 0; j < bfcode.length; j++) {
+				showInfoArea.innerHTML += (j == cp - 1 ? '<b>' : '') + bfcode[j].replace(/\&|\"|\'|\<|\>/g, (match) => { switch (match) { case '&': return '&amp;'; case '"': return '&quot;'; case '\'': return '&#039;'; case '<': return '&lt;'; case '>': return '&gt;'; } }) + (j == cp - 1 ? '</b>' : '') + (j % 64 == 63 ? '<br/>' : '');
+			}
+			showInfoArea.innerHTML += '<br/><br/>[';
+			for (let j = 0; j < bftape.length; j++) {
+				showInfoArea.innerHTML += (j ? ',' : '') + (j == tp ? '<b>' : '') + (bftape[j] + 256).toString(16).substr(1, 2) + (j == tp ? '</b>' : '');
+			}
+			showInfoArea.innerHTML += `]`;
+			countElem.innerHTML = ac;
+		},
 		run = (n) => {
+			n = n || +maxRunInput.value;
 			const f = () => {
 				switch (bfcode[cp]) {
 					case '[':
@@ -36,8 +54,14 @@ window.onload = () => {
 				}
 			};
 			for (let i = 0; i < n; i++) {
-				if (tp < 0) return;
-				if (!bfcode[cp]) return;
+				if (tp < 0) {
+					showInfo();
+					return;
+				}
+				if (!bfcode[cp]) {
+					showInfo();
+					return;
+				}
 				bftape[tp] = bftape[tp] || 0;
 				switch (bfcode[cp]) {
 					case '+':
@@ -62,6 +86,7 @@ window.onload = () => {
 									f();
 								}
 								else {
+									showInfo();
 									return;
 								}
 							}
@@ -74,6 +99,7 @@ window.onload = () => {
 								f();
 							}
 							else {
+								showInfo();
 								return;
 							}
 						}
@@ -104,30 +130,24 @@ window.onload = () => {
 					case ':':
 						cp++;
 						intervalId && clearInterval(intervalId);
+						showInfo();
 						return;
 				}
 				ac++;
 				cp++;
 			}
+			showInfo();
 		},
-		showInfo = () => {
-			//ここに色々書く
-			showInfoArea.innerHTML = '';
-			for (let j = 0; j < bfcode.length; j++) {
-				showInfoArea.innerHTML += (j == cp - 1 ? '<b>' : '') + bfcode[j].replace(/\&|\"|\'|\<|\>/g, (match) => { switch (match) { case '&': return '&amp;'; case '"': return '&quot;'; case '\'': return '&#039;'; case '<': return '&lt;'; case '>': return '&gt;'; } }) + (j == cp - 1 ? '</b>' : '') + (j % 64 == 63 ? '<br/>' : '');
+		reset = (n) => {
+			switch (n) {
+				case 1:
+					bfcodeArea.value = bfcode.replace(/[^+,\-.<>\[\]:]+/g, '');
+					break;
 			}
-			showInfoArea.innerHTML += '<br/><br/>[';
-			for (let j = 0; j < bftape.length; j++) {
-				showInfoArea.innerHTML += (j ? ',' : '') + (j == tp ? '<b>' : '') + (bftape[j] + 256).toString(16).substr(1, 2) + (j == tp ? '</b>' : '');
-			}
-			showInfoArea.innerHTML += `]`;
-			countElem.innerHTML = ac;
-		},
-		reset = () => {
 			tp = cp = lv = ac = 0;
 			bftape = new Array();
 			bfcode = bfcodeArea.value;
-			strin = '';
+			strin = defaultInput.value;
 			outArea.value = '';
 			showInfoArea.innerHTML = '';
 			nocInput.innerHTML = bfcode.length;
@@ -135,8 +155,21 @@ window.onload = () => {
 			countElem.innerHTML = '0';
 			intervalId && clearInterval(intervalId);
 			showInfo();
-		};
+		},
+		run_constant = () => {
+			let i = 0;
+			const
+				lim = +maxRunInput.value,
+				cps = +cpsInput.value;
 
+			intervalId && clearInterval(intervalId);
+			intervalId = setInterval(() => {
+				run(1);
+				if (i == lim) {
+					clearInterval(intervalId);
+				}
+			}, cps);
+		};
 	reset();
 
 	//イベント
@@ -147,38 +180,75 @@ window.onload = () => {
 	cpsInput.addEventListener('blur', () => {
 		const x = +cpsInput.value || 0;
 		cpsInput.value = x < 10 ? 10 : Math.floor(x);
+		cycleButton.innerHTML = `${x}ミリ秒ごとに実行(p)`;
 	});
 	bfcodeArea.addEventListener('change', () => {
 		reset();
 	});
 	runButton.addEventListener('click', () => {
-		run(+maxRunInput.value);
-		showInfo();
+		run();
 	});
 	stepButton.addEventListener('click', () => {
 		run(1);
-		showInfo();
 	});
 	resetButton.addEventListener('click', () => {
 		reset();
 	});
 	bfco.addEventListener('click', () => {
-		bfcodeArea.value = bfcode.replace(/[^+,\-.<>\[\]:]+/g, '');
-		reset();
+		reset(1);
 	});
 	cycleButton.addEventListener('click', () => {
-		let i = 0;
-		const
-			lim = +maxRunInput.value,
-			cps = +cpsInput.value;
+		run_constant();
+	});
 
-		intervalId && clearInterval(intervalId);
-		intervalId = setInterval(() => {
-			run(1);
-			showInfo();
-			if (i == lim) {
-				clearInterval(intervalId);
+	bfcodeArea.addEventListener('focus', (e) => {
+		is_focus = true;
+	});
+	bfcodeArea.addEventListener('blur', (e) => {
+		is_focus = false;
+	});
+	defaultInput.addEventListener('focus', (e) => {
+		is_focus = true;
+	});
+	defaultInput.addEventListener('blur', (e) => {
+		is_focus = false;
+	});
+	cpsInput.addEventListener('focus', (e) => {
+		console.log(e);
+		is_focus = true;
+	});
+	cpsInput.addEventListener('blur', (e) => {
+		console.log(e);
+		is_focus = false;
+	});
+	maxRunInput.addEventListener('focus', (e) => {
+		is_focus = true;
+	});
+	maxRunInput.addEventListener('blur', (e) => {
+		is_focus = false;
+	});
+	window.addEventListener('keydown', (e) => {
+		if (!is_focus && !is_meta) {
+			switch (e.key) {
+				case 'c':
+					reset();
+					break;
+				case 'p':
+					run_constant()
+					break;
+				case 'r':
+					run();
+					break;
+				case 's':
+					run(1);
+					break;
+				case 'Meta':
+					is_meta = true;
+					break;
 			}
-		}, cps);
+		}
+	});
+	window.addEventListener('keyup', () => {
+		is_meta = false;
 	});
 };
