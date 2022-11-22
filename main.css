@@ -1,34 +1,41 @@
-body{
+body {
 	margin: 0;
 	padding: 16px;
 }
 
-b{
+b {
 	color: #fff;
 	background: #000;
 }
 
-input{
+input,
+textarea {
+	font-family: 'Courier New', Courier, monospace;
+}
+
+input {
 	text-align: right;
+	width: 8em;
 }
 
 
-table{
+table {
 	background: #000;
 }
 
-textarea{
-	width:360px;
-	height:90px;
+textarea {
+	width: 360px;
+	height: 90px;
 }
 
-th,td{
+th,
+td {
 	background: #fff;
 }
 
 
 
-#showInfoArea{
+#showInfoArea {
 	overflow: scroll;
 	font-family: courier;
 }

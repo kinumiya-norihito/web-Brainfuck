@@ -10,13 +10,22 @@
 
 <body>
 	<textarea id="bfcodeArea" placeholder="ソースコード"></textarea><br />
-	<input type="number" id="maxRunInput" value="1000000" />回<button id="runButton">実行</button><span
-		id="count">0</span><br />
-	<button id="stepButton">ステップ実行</button><br />
-	<input type="number" id="cpsInput" value="10" /><button id="cycleButton">ミリ秒ごとに実行</button><br />
-	<textarea id="outArea" placeholder="出力"></textarea><br />
+	<button id="runButton">実行(r)</button>
+	<button id="stepButton">ステップ実行(s)</button><br />
+	<button id="cycleButton">10ミリ秒ごとに実行(p)</button><br />
+	<textarea id="outArea" placeholder="出力" disabled></textarea><br />
 	<div id="showInfoArea"></div><br />
-	<button id="resetButton">リセット</button>
+	<button id="resetButton">リセット(c)</button>
+	<details>
+		<summary>
+			その他設定
+		</summary>
+		ミリ秒ごとに実行:<input type="number" id="cpsInput" value="10" />ms<br />
+		一度に評価できる最大数:<input type="number" id="maxRunInput" value="1000000" />回<br />
+		デフォルト入力値(<code>,</code>が行われた場合、これが入力されたと仮定する)<br />
+		<textarea id="defaultInput"></textarea><br />
+		<button id="bfco">命令文字以外削除(`:`含む)</button>
+	</details>
 	<details>
 		<summary>
 			情報
@@ -39,7 +48,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<button id="bfco">命令文字以外削除(`:`含む)</button>
+		合計命令評価回数:<span id="count">0</span>
 	</details>
 	<details>
 		<summary>説明など</summary>
