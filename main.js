@@ -1,254 +1,298 @@
-window.onload = () => {
-	let
-		bftape,
-		tp,
-		bfcode,
-		cp,
-		lv,
-		strin,
-		intervalId,
-		ac,
-		is_focus = false,
-		is_meta = false;
-	const
-		//定数など
-		//element
-		maxRunInput = document.getElementById('maxRunInput'),
-		bfcodeArea = document.getElementById('bfcodeArea'),
-		outArea = document.getElementById('outArea'),
-		showInfoArea = document.getElementById('showInfoArea'),
-		runButton = document.getElementById('runButton'),
-		stepButton = document.getElementById('stepButton'),
-		resetButton = document.getElementById('resetButton'),
-		cycleButton = document.getElementById('cycleButton'),
-		cpsInput = document.getElementById('cpsInput'),
-		nocInput = document.getElementById('nocInput'),
-		novcInput = document.getElementById('novcInput'),
-		bfco = document.getElementById('bfco'),
-		defaultInput = document.getElementById('defaultInput'),
-		countElem = document.getElementById('count'),
-		//関数
 
-		showInfo = () => {
-			//ここに色々書く
-			showInfoArea.innerHTML = '';
-			for (let j = 0; j < bfcode.length; j++) {
-				showInfoArea.innerHTML += (j == cp - 1 ? '<b>' : '') + bfcode[j].replace(/\&|\"|\'|\<|\>/g, (match) => { switch (match) { case '&': return '&amp;'; case '"': return '&quot;'; case '\'': return '&#039;'; case '<': return '&lt;'; case '>': return '&gt;'; } }) + (j == cp - 1 ? '</b>' : '') + (j % 64 == 63 ? '<br/>' : '');
-			}
-			showInfoArea.innerHTML += '<br/><br/>[';
-			for (let j = 0; j < bftape.length; j++) {
-				showInfoArea.innerHTML += (j ? ',' : '') + (j == tp ? '<b>' : '') + (bftape[j] + 256).toString(16).substr(1, 2) + (j == tp ? '</b>' : '');
-			}
-			showInfoArea.innerHTML += `]`;
-			countElem.innerHTML = ac;
-		},
-		run = (n) => {
-			n = n || +maxRunInput.value;
-			const f = () => {
-				switch (bfcode[cp]) {
-					case '[':
-						lv++;
-						break;
-					case ']':
-						lv--;
-				}
-			};
-			for (let i = 0; i < n; i++) {
-				if (tp < 0) {
-					showInfo();
-					return;
-				}
-				if (!bfcode[cp]) {
-					showInfo();
-					return;
-				}
-				bftape[tp] = bftape[tp] || 0;
-				switch (bfcode[cp]) {
-					case '+':
-						bftape[tp]++;
-						bftape[tp] %= 256;
-						break;
-					case '-':
-						bftape[tp]--;
-						if (bftape[tp] < 0) bftape[tp] += 256;
-						break;
-					case '>':
-						tp++;
-						break;
-					case '<':
-						tp--;
-						break;
-					case '[':
-						if (bftape[tp] == 0) {
-							lv++;
-							while (lv > 0) {
-								if (bfcode[++cp]) {
-									f();
-								}
-								else {
-									showInfo();
-									return;
-								}
-							}
-						}
-						break;
-					case ']':
-						lv--;
-						while (lv < 0) {
-							if (--cp > 0) {
-								f();
-							}
-							else {
-								showInfo();
-								return;
-							}
-						}
-						cp--;
-						break;
-					case '.':
-						outArea.value = outArea.value.replace(/%/g, '%25');
-						outArea.value += '%' + ((256 + bftape[tp]).toString(16).substr(1, 2));
-						try {
-							outArea.value = decodeURIComponent(outArea.value);
-						}
-						catch (e) { }
-						break;
-					case ',':
-						while (!strin) {
-							strin += prompt('\'%NN\'とすることで0-255までの数値も入力可能\nただし\'%\'を入力する場合は\'%25\'と入力') || '';
-							strin = encodeURI(strin).replace(/%25/g, '%');
-						}
-						if (strin[0] == '%') {
-							bftape[tp] = parseInt(strin.substr(1, 2), 16);
-							strin = strin.substr(3);
-						}
-						else {
-							bftape[tp] = strin.charCodeAt(0);
-							strin = strin.substr(1);
-						}
-						break;
-					case ':':
-						cp++;
-						intervalId && clearInterval(intervalId);
-						showInfo();
-						return;
-				}
-				ac++;
-				cp++;
-			}
-			showInfo();
-		},
-		reset = (n) => {
-			switch (n) {
-				case 1:
-					bfcodeArea.value = bfcode.replace(/[^+,\-.<>\[\]:]+/g, '');
+class Status {
+	static None = Symbol(0);
+	static Complete = Symbol(1);
+	static Stop = Symbol(2);
+	static Error = Symbol(3);
+}
+
+class BrainfuckInterpreter {
+	#code;
+	#pc;
+	#tape;
+	#tp;
+
+	#inputBytes;
+	#output;
+	#ruiString;
+
+	#executionCount;
+	#status;
+	#latestLog;
+
+	constructor(code, input) {
+		this.#code = code;
+		this.#pc = -1;
+		this.#tape = [0];
+		this.#tp = 0;
+
+		this.#createInputBytes(input);
+		this.#output = "";
+		this.#ruiString = "";
+
+		this.#executionCount = 0;
+		this.#status = Status.None;
+	}
+
+	exexute(lim) {
+		if (this.#status == Status.Error) return;
+		lim = lim || 1;
+		let lv = 0;
+		const lvManage = () => {
+			switch (this.#code[this.#pc]) {
+				case '[':
+					lv++;
+					break;
+				case ']':
+					lv--;
 					break;
 			}
-			tp = cp = lv = ac = 0;
-			bftape = new Array();
-			bfcode = bfcodeArea.value;
-			strin = defaultInput.value;
-			outArea.value = '';
-			showInfoArea.innerHTML = '';
-			nocInput.innerHTML = bfcode.length;
-			novcInput.innerHTML = bfcode.replace(/[^+,\-.<>\[\]]+/g, '').length;
-			countElem.innerHTML = '0';
-			intervalId && clearInterval(intervalId);
-			showInfo();
-		},
-		run_constant = () => {
-			let i = 0;
-			const
-				lim = +maxRunInput.value,
-				cps = +cpsInput.value;
+		};
 
-			intervalId && clearInterval(intervalId);
-			intervalId = setInterval(() => {
-				run(1);
-				if (i == lim) {
-					clearInterval(intervalId);
-				}
-			}, cps);
+		for (let i = 0; i < lim; i++) {
+			this.#pc++;
+			this.#executionCount++;
+			switch (this.#code[this.#pc]) {
+				case '+':
+					this.#tape[this.#tp] = (this.#tape[this.#tp] + 1) % 256;
+					break;
+				case '-':
+					this.#tape[this.#tp] = (this.#tape[this.#tp] + 255) % 256;
+					break;
+				case '>':
+					this.#tp++;
+					if (this.#tape[this.#tp] == undefined) {
+						this.#tape[this.#tp] = 0;
+					}
+					break;
+				case '<':
+					this.#tp--;
+					break;
+				case '[':
+					if (this.#tape[this.#tp] == 0) {
+						lv++;
+						while (lv) {
+							this.#pc++;
+							if (!this.#code[this.#pc]) {
+								this.#createLog("out of range", Status.Error);
+								return;
+							}
+							lvManage();
+						}
+					}
+					break;
+				case ']':
+					lv--;
+					while (lv) {
+						this.#pc--;
+						if (this.#pc < 0) {
+							this.#createLog("illegal index", Status.Error);
+							return;
+						}
+						lvManage();
+					}
+					this.#pc--;
+					break;
+				case '.':
+					this.#ruiString += `%${(256 + this.#tape[this.#tp]).toString(16).substring(1, 3)}`;
+					break;
+				case ',':
+					if (this.inputBytes.length > 0) {
+						this.#tape[this.#tp] = this.inputBytes[0];
+						this.inputBytes.shift();
+					}
+					else {
+						this.#createLog("insufficient input", Status.Error);
+						return;
+					}
+					break;
+				case ':':
+					this.#createLog("stop", Status.Stop);
+					return;
+			}
+			if (!this.#code[this.#pc]) {
+				this.#createLog("complete", Status.Complete);
+				return "complete";
+			}
+		}
+		this.#createLog("none", Status.None);
+		return;
+	}
+
+	#createLog(log, status) {
+		this.#status = status;
+		this.#latestLog = log;
+	}
+
+	#createInputBytes(input) {
+		this.#inputBytes = [];
+		input = encodeURI(input || "");
+		while (input) {
+			if (input[0] == '%') {
+				this.#inputBytes[this.#inputBytes.length] = parseInt(input.substring(1, 3), 16);
+				input = input.substring(3);
+			}
+			else {
+				this.#inputBytes[this.#inputBytes.length] = input[0].charCodeAt();
+				input = input.substring(1);
+			}
+		}
+	}
+
+	get code() {
+		return this.#code;
+	}
+	get pc() {
+		return this.#pc;
+	}
+	get tape() {
+		return this.#tape;
+	}
+	get tp() {
+		return this.#tp;
+	}
+
+	get inputBytes() {
+		return this.#inputBytes;
+	}
+
+	get output() {
+		try {
+			this.#output = decodeURIComponent(this.#ruiString);
+		}
+		catch { }
+		return this.#output;
+	}
+
+	get executionCount() {
+		return executionCount;
+	}
+	get status() {
+		return this.#status;
+	}
+
+	get latestLog() {
+		return this.#latestLog;
+	}
+}
+
+window.onload = () => {
+	let
+		interpreter,
+		executionLimit,
+		cpms,
+		intervalObj,
+		bool;
+
+	const
+		/*
+			elements
+		*/
+		//code
+		codeTextareaElement = document.getElementById("codeTextarea"),
+		//io
+		inputTextareaElement = document.getElementById("inputTextarea"),
+		outputTextareaElement = document.getElementById("outputTextarea"),
+		//control
+		executeButtonElement = document.getElementById("executeButton"),
+		stepExecuteButtonElement = document.getElementById("stepExecuteButton"),
+		executeCycleButtonElement = document.getElementById("executeCycleButton"),
+		resetButtonElement = document.getElementById("resetButton"),
+		//information
+		inputShowAreaElement = document.getElementById("inputShowArea"),
+		tapeShowAreaElement = document.getElementById("tapeShowArea"),
+		codeShowAreaElement = document.getElementById("codeShowArea"),
+		//config
+		executionLimitInputElement = document.getElementById("executionLimitInput"),
+		cpmsInputElement = document.getElementById("cpmsInput"),
+		/*
+			functions
+		*/
+		reset = () => {
+			stopInterval();
+
+			interpreter = new BrainfuckInterpreter(codeTextareaElement.value, inputTextareaElement.value);
+			show_information();
+
+			executionLimit = getValue(executionLimitInputElement, 1);
+			cpms = getValue(cpmsInputElement, 10);
+
+			bool = false;
+		},
+		show_information = () => {
+			//output
+			switch (interpreter.status) {
+				case Status.None:
+					outputTextareaElement.className = "";
+					break;
+				case Status.Complete:
+					outputTextareaElement.className = "complete";
+					break;
+				case Status.Stop:
+					outputTextareaElement.className = "stop";
+					break;
+				case Status.Error:
+					outputTextareaElement.className = "error";
+					break;
+			}
+			outputTextareaElement.value = interpreter.status == Status.Error ? interpreter.latestLog : interpreter.output;
+			//input
+			inputShowAreaElement.innerHTML = "";
+			for (let i = 0; i < interpreter.inputBytes.length; i++) {
+				inputShowAreaElement.innerHTML += `${i ? " " : "<span class=\"target\">"}${(256 + interpreter.inputBytes[i]).toString(16).substring(1, 3)}${i ? " " : "</span>"}`;
+			}
+			//tape
+			tapeShowAreaElement.innerHTML = "";
+			for (let i = 0; i < interpreter.tape.length; i++) {
+				const bool = i === interpreter.tp;
+				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${bool ? "<span class=\"target\">" : ""}${(256 + interpreter.tape[i]).toString(16).substring(1, 3)}${bool ? "</span>" : ""}`;
+			}
+			//code
+			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc)}<span class="target">${interpreter.code.substring(interpreter.pc, interpreter.pc + 1)}</span>${interpreter.code.substring(interpreter.pc + 1)}<br/><br/>`;
+		},
+		getValue = (element, min) => {
+			return element.value < min ? min : element.value;
+		},
+		startInterval = () => {
+			executeCycleButtonElement.innerHTML = "stop execution";
+			intervalObj = setInterval(intervalFunction, cpms);
+			bool = true;
+		},
+		stopInterval = () => {
+			executeCycleButtonElement.innerHTML = `execute per ${cpms}ms`;
+			clearInterval(intervalObj);
+			bool = false;
+		},
+		intervalFunction = () => {
+			interpreter.exexute(1);
+			show_information();
+			if (interpreter.status != Status.None) {
+				stopInterval();
+			}
 		};
 	reset();
 
-	//イベント
-	maxRunInput.addEventListener('blur', () => {
-		const x = +maxRunInput.value || 0;
-		maxRunInput.value = x < 1 ? 1000000 : Math.floor(x);
+	//control
+	executeButtonElement.addEventListener("click", () => {
+		interpreter.exexute(executionLimit);
+		show_information();
 	});
-	cpsInput.addEventListener('blur', () => {
-		const x = +cpsInput.value || 0;
-		cpsInput.value = x < 10 ? 10 : Math.floor(x);
-		cycleButton.innerHTML = `${x}ミリ秒ごとに実行(p)`;
+	stepExecuteButtonElement.addEventListener("click", () => {
+		interpreter.exexute(1);
+		show_information();
 	});
-	bfcodeArea.addEventListener('change', () => {
+	executeCycleButtonElement.addEventListener("click", () => {
+		bool ? stopInterval() : startInterval();
+	});
+	resetButtonElement.addEventListener("click", () => {
 		reset();
-	});
-	runButton.addEventListener('click', () => {
-		run();
-	});
-	stepButton.addEventListener('click', () => {
-		run(1);
-	});
-	resetButton.addEventListener('click', () => {
-		reset();
-	});
-	bfco.addEventListener('click', () => {
-		reset(1);
-	});
-	cycleButton.addEventListener('click', () => {
-		run_constant();
 	});
 
-	bfcodeArea.addEventListener('focus', (e) => {
-		is_focus = true;
+	//config
+	executionLimitInputElement.addEventListener("blur", () => {
+		if (executionLimitInputElement.value < 1) executionLimitInputElement.value = 10000;
 	});
-	bfcodeArea.addEventListener('blur', (e) => {
-		is_focus = false;
-	});
-	defaultInput.addEventListener('focus', (e) => {
-		is_focus = true;
-	});
-	defaultInput.addEventListener('blur', (e) => {
-		is_focus = false;
-	});
-	cpsInput.addEventListener('focus', (e) => {
-		console.log(e);
-		is_focus = true;
-	});
-	cpsInput.addEventListener('blur', (e) => {
-		console.log(e);
-		is_focus = false;
-	});
-	maxRunInput.addEventListener('focus', (e) => {
-		is_focus = true;
-	});
-	maxRunInput.addEventListener('blur', (e) => {
-		is_focus = false;
-	});
-	window.addEventListener('keydown', (e) => {
-		if (!is_focus && !is_meta) {
-			switch (e.key) {
-				case 'c':
-					reset();
-					break;
-				case 'p':
-					run_constant()
-					break;
-				case 'r':
-					run();
-					break;
-				case 's':
-					run(1);
-					break;
-				case 'Meta':
-					is_meta = true;
-					break;
-			}
-		}
-	});
-	window.addEventListener('keyup', () => {
-		is_meta = false;
+	cpmsInputElement.addEventListener("blur", () => {
+		if (cpmsInputElement.value < 10) cpmsInputElement.value = 10;
 	});
 };

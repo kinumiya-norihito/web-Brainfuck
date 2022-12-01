@@ -1,62 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-	<meta charset="utf-8" />
+	<meta charset="UTF-8">
 	<title>web Brainfuck</title>
-	<link href="main.css" rel="stylesheet" />
+	<link rel="stylesheet" href="main.css">
 	<script src="main.js"></script>
 </head>
 
 <body>
-	<textarea id="bfcodeArea" placeholder="ソースコード"></textarea><br />
-	<button id="runButton">実行(r)</button>
-	<button id="stepButton">ステップ実行(s)</button><br />
-	<button id="cycleButton">10ミリ秒ごとに実行(p)</button><br />
-	<textarea id="outArea" placeholder="出力" disabled></textarea><br />
-	<div id="showInfoArea"></div><br />
-	<button id="resetButton">リセット(c)</button>
-	<details>
-		<summary>
-			その他設定
-		</summary>
-		ミリ秒ごとに実行:<input type="number" id="cpsInput" value="10" />ms<br />
-		一度に評価できる最大数:<input type="number" id="maxRunInput" value="1000000" />回<br />
-		デフォルト入力値(<code>,</code>が行われた場合、これが入力されたと仮定する)<br />
-		<textarea id="defaultInput"></textarea><br />
-		<button id="bfco">命令文字以外削除(`:`含む)</button>
-	</details>
-	<details>
-		<summary>
-			情報
-		</summary>
-		<table>
-			<thead>
-				<tr>
-					<th></th>
-					<td>文字数</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<th>全ての文字</th>
-					<td id="nocInput"></td>
-				</tr>
-				<tr>
-					<th>命令文字のみ</th>
-					<td id="novcInput"></td>
-				</tr>
-			</tbody>
-		</table>
-		合計命令評価回数:<span id="count">0</span>
-	</details>
-	<details>
-		<summary>説明など</summary>
-		<p>
-			charsetはUTF-8。
-			:はブレークポイントとして機能します。開発の際にお使いください。
-		</p>
-	</details>
+	<div class="brainfuck area">
+		<div class="code area">
+			<span>code</span><br />
+			<textarea id="codeTextarea" placeholder=",>,>,.<.<."></textarea><br />
+		</div>
+	</div>
+	<div class="io area">
+		<div class="input area">
+			<span>input</span><br />
+			<textarea id="inputTextarea" placeholder="abc"></textarea><br />
+		</div>
+		<div class="output area">
+			<span>output</span><br />
+			<textarea id="outputTextarea" class="None" placeholder="cba" disabled></textarea><br />
+		</div>
+	</div>
+	<div class="control area">
+		<div class="button area">
+			<button id="executeButton">execute</button>
+			<button id="stepExecuteButton">execute only one step</button>
+			<button id="executeCycleButton">execute per 10ms</button><br />
+			<button id="resetButton">reset</button>
+		</div>
+	</div>
+	<div class="information area">
+		<div class="area">
+			<span>input</span><br />
+			<div class="scrollable space-pre" id="inputShowArea"></div>
+		</div>
+		<div class="area">
+			<span>tape</span><br />
+			<div class="scrollable space-pre" id="tapeShowArea"></div>
+		</div>
+		<div class="area">
+			<span>code</span><br />
+			<div class="scrollable space-pre" id="codeShowArea"></div>
+		</div>
+	</div>
+	<div class="other area">
+		<details class="area">
+			<summary>
+				config
+			</summary>
+			<div class="config area">
+				maximum execution times:<input id="executionLimitInput" type="number" min="1" size="8"
+					value="10000">times<br />
+				cycle time:<input id="cpmsInput" type="number" min="10" size="8" value="10">ms<br />
+			</div>
+		</details>
+	</div>
 </body>
 
 </html>

@@ -1,41 +1,152 @@
-body {
-	margin: 0;
-	padding: 16px;
+@media (prefers-color-scheme: light) {
+	body {
+		background: #fff;
+		color: #000;
+	}
+
+	input,
+	textarea {
+		background: #e0e0e0;
+	}
+
+	.error {
+		background: #f88;
+		color: #400;
+	}
+
+	.stop {
+		background: #ffc;
+	}
+
+	.complete {
+		background: #cfc;
+	}
+
+	.scrollable {
+		border: solid #ddd 2px;
+	}
+
+	.information {
+		color: #000;
+	}
+
+	.information .target {
+		background: black;
+		color: white;
+	}
+
+	::placeholder {
+		color: #88f;
+	}
 }
 
-b {
-	color: #fff;
-	background: #000;
+@media (prefers-color-scheme: dark) {
+	body {
+		background: #222;
+		color: #ccc;
+	}
+
+	input,
+	textarea {
+		background: #000;
+		color: #ccc;
+	}
+
+	button {
+		color: #aaa;
+		background: #444;
+	}
+
+	.error {
+		background: #844;
+		color: #400;
+	}
+
+	.stop {
+		background: #884;
+	}
+
+	.complete {
+		background: #484;
+	}
+
+	.scrollable {
+		border: solid #444 2px;
+	}
+
+	.information {
+		color: #ccc;
+	}
+
+	.information .target {
+		background: #e0e0e0;
+		color: #000;
+	}
+
+	::placeholder {
+		color: #448;
+	}
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	font-size: 16px;
+}
+
+body {
+	padding: 8px;
 }
 
 input,
 textarea {
+	border: 0;
+}
+
+textarea {
 	font-family: 'Courier New', Courier, monospace;
+	width: 100%;
+	height: 8em;
 }
 
 input {
 	text-align: right;
-	width: 8em;
 }
 
-
-table {
-	background: #000;
+button {
+	margin: 2px;
+	padding: 2px;
+	border: solid #888 2px;
 }
 
-textarea {
-	width: 360px;
-	height: 90px;
+.io.area {
+	display: grid;
+	grid-template-columns: 50% 50%;
 }
 
-th,
-td {
-	background: #fff;
+.scrollable {
+	overflow-x: scroll;
+	overflow-y: scroll;
 }
 
+.space-pre {
+	font-family: 'Courier New', Courier, monospace;
+	white-space: pre;
+}
 
+.area {
+	padding: 4px;
+}
 
-#showInfoArea {
-	overflow: scroll;
-	font-family: courier;
+#codeShowArea {
+	min-height: 2em;
+	max-height: 16em;
+}
+
+#inputShowArea {
+	height: 2em;
+}
+
+#tapeShowArea {
+	height: 2em;
 }
