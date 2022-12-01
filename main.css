@@ -30,6 +30,23 @@
 		color: #000;
 	}
 
+	.testTableTr {
+		background: #ddd;
+	}
+
+	.testTableTd {
+		background: #e0e0e0;
+	}
+
+	.testTableTd.complete {
+		background: #cfc;
+	}
+
+	.testTableTd.error {
+		background: #f88;
+		color: #400;
+	}
+
 	.information .target {
 		background: black;
 		color: white;
@@ -81,6 +98,23 @@
 	.information .target {
 		background: #e0e0e0;
 		color: #000;
+	}
+
+	.testTableTr {
+		background: #444;
+	}
+
+	.testTableTd {
+		background: #222;
+	}
+
+	.testTableTd.complete {
+		background: #484;
+	}
+
+	.testTableTd.error {
+		background: #844;
+		color: #400;
 	}
 
 	::placeholder {
@@ -149,4 +183,26 @@ button {
 
 #tapeShowArea {
 	height: 2em;
+}
+
+
+/*table*/
+#testTableBody {
+	max-height: 16em;
+	overflow-y: scroll;
+}
+
+.testTableTr {
+	display: grid;
+	grid-template-columns: 7fr 7fr 1fr;
+}
+
+.testTableTd {
+	margin: 2px;
+	min-height: 1em;
+	max-height: 4em;
+	font-family: 'Courier New', Courier, monospace;
+	overflow-x: scroll;
+	overflow-y: scroll;
+	white-space: pre;
 }
