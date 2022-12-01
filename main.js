@@ -115,7 +115,7 @@ class BrainfuckInterpreter {
 				return "complete";
 			}
 		}
-		this.#createLog("none", Status.None);
+		this.#createLog("execution limit", Status.None);
 		return;
 	}
 
@@ -303,11 +303,13 @@ window.onload = () => {
 				const testInterpreter = new BrainfuckInterpreter(code, testObj.input);
 				testInterpreter.exexute(executionLimit);
 				if (testInterpreter.output === testObj.output) {
-					testResultTd.className = "complete";
+					testResultTd.className = "testTableTd complete";
 				}
 				else {
-					testResultTd.className = "error";
+					testResultTd.className = "testTableTd error";
 				}
+				testResultTd.innerHTML = testInterpreter.latestLog;
+				console.log(testInterpreter.latestLog);
 				testTableBodyElement.append(testTableTr);
 			}
 		};
