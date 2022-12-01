@@ -58,6 +58,25 @@
 				cycle time:<input id="cpmsInput" type="number" min="10" size="8" value="10">ms<br />
 			</div>
 		</details>
+		<details class="area">
+			<summary>
+				test
+			</summary>
+			<textarea id="testJSONTextarea">[{"input":"abc","output":"cba"},{"input":"012","output":"210"}]</textarea>
+			<button id="doTestButton">do test</button>
+			<div class="test">
+				<div id="testTable">
+					<div id="testTableHead">
+						<div class="testTableTr">
+							<div class="testTableTd">input</div>
+							<div class="testTableTd">output</div>
+							<div class="testTableTd">result</div>
+						</div>
+					</div>
+					<div id="testTableBody"></div>
+				</div>
+			</div>
+		</details>
 	</div>
 </body>
 

@@ -178,6 +178,7 @@ class BrainfuckInterpreter {
 
 window.onload = () => {
 	let
+		code,
 		interpreter,
 		executionLimit,
 		cpms,
@@ -205,19 +206,28 @@ window.onload = () => {
 		//config
 		executionLimitInputElement = document.getElementById("executionLimitInput"),
 		cpmsInputElement = document.getElementById("cpmsInput"),
+		//test
+		testJSONTextareaElement = document.getElementById("testJSONTextarea"),
+		doTestButtonElement = document.getElementById("doTestButton"),
+		testTableBodyElement = document.getElementById("testTableBody"),
 		/*
 			functions
 		*/
 		reset = () => {
 			stopInterval();
-
-			interpreter = new BrainfuckInterpreter(codeTextareaElement.value, inputTextareaElement.value);
-			show_information();
+			code = codeTextareaElement.value;
+			input = inputTextareaElement.value;
+			interpreter = new BrainfuckInterpreter(code, input);
 
 			executionLimit = getValue(executionLimitInputElement, 1);
 			cpms = getValue(cpmsInputElement, 10);
 
 			bool = false;
+			/*show*/
+			executeCycleButtonElement.innerHTML = `execute per ${cpms}ms`;
+			//test
+			testTableBodyElement.innerHTML = "";
+			show_information();
 		},
 		show_information = () => {
 			//output
@@ -269,6 +279,37 @@ window.onload = () => {
 			if (interpreter.status != Status.None) {
 				stopInterval();
 			}
+		},
+		test = (testListJSON) => {
+			testTableBodyElement.innerHTML = "";
+			const testList = JSON.parse(testListJSON);
+			for (const testObj of testList) {
+				const
+					testTableTr = document.createElement("div"),
+					testInputTd = document.createElement("div"),
+					testOutputTd = document.createElement("div"),
+					testResultTd = document.createElement("div");
+				//add element
+				testTableTr.append(testInputTd);
+				testTableTr.append(testOutputTd);
+				testTableTr.append(testResultTd);
+				//set class
+				testTableTr.className = "testTableTr";
+				testInputTd.className = testOutputTd.className = "testTableTd";
+				//set text
+				testInputTd.innerHTML = testObj.input;
+				testOutputTd.innerHTML = testObj.output;
+				//do test
+				const testInterpreter = new BrainfuckInterpreter(code, testObj.input);
+				testInterpreter.exexute(executionLimit);
+				if (testInterpreter.output === testObj.output) {
+					testResultTd.className = "complete";
+				}
+				else {
+					testResultTd.className = "error";
+				}
+				testTableBodyElement.append(testTableTr);
+			}
 		};
 	reset();
 
@@ -294,5 +335,10 @@ window.onload = () => {
 	});
 	cpmsInputElement.addEventListener("blur", () => {
 		if (cpmsInputElement.value < 10) cpmsInputElement.value = 10;
+	});
+
+	//test
+	doTestButtonElement.addEventListener("click", () => {
+		test(testJSONTextareaElement.value);
 	});
 };
