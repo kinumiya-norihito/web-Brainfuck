@@ -1,4 +1,3 @@
-
 class Status {
 	static None = Symbol(0);
 	static Complete = Symbol(1);
@@ -302,14 +301,14 @@ window.onload = () => {
 				//do test
 				const testInterpreter = new BrainfuckInterpreter(code, testObj.input);
 				testInterpreter.exexute(executionLimit);
+				testResultTd.innerHTML = testInterpreter.latestLog;
 				if (testInterpreter.output === testObj.output) {
 					testResultTd.className = "testTableTd complete";
 				}
 				else {
 					testResultTd.className = "testTableTd error";
+					if (testInterpreter.latestLog == "complete") testResultTd.innerHTML = "wrong output";
 				}
-				testResultTd.innerHTML = testInterpreter.latestLog;
-				console.log(testInterpreter.latestLog);
 				testTableBodyElement.append(testTableTr);
 			}
 		};
