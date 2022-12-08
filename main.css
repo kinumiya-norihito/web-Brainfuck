@@ -14,7 +14,7 @@
 		color: #400;
 	}
 
-	.stop {
+	.pause {
 		background: #ffc;
 	}
 
@@ -79,12 +79,12 @@
 		color: #400;
 	}
 
-	.stop {
-		background: #884;
+	.pause {
+		background: #442;
 	}
 
 	.complete {
-		background: #484;
+		background: #242;
 	}
 
 	.scrollable {
@@ -109,7 +109,7 @@
 	}
 
 	.testTableTd.complete {
-		background: #484;
+		background: #242;
 	}
 
 	.testTableTd.error {
@@ -151,6 +151,10 @@ button {
 	margin: 2px;
 	padding: 2px;
 	border: solid #888 2px;
+}
+
+.error {
+	font-weight: bold;
 }
 
 .io.area {
