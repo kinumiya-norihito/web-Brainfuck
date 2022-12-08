@@ -1,7 +1,7 @@
 class Status {
 	static None = Symbol(0);
 	static Complete = Symbol(1);
-	static Stop = Symbol(2);
+	static Break = Symbol(2);
 	static Error = Symbol(3);
 }
 
@@ -66,6 +66,10 @@ class BrainfuckInterpreter {
 					break;
 				case '<':
 					this.#tp--;
+					if (this.#tp < 0) {
+						this.#createLog("illegal index", Status.Error);
+						return;
+					}
 					break;
 				case '[':
 					if (this.#tape[this.#tp] == 0) {
@@ -106,7 +110,7 @@ class BrainfuckInterpreter {
 					}
 					break;
 				case ':':
-					this.#createLog("stop", Status.Stop);
+					this.#createLog("break", Status.Break);
 					return;
 			}
 			if (!this.#code[this.#pc]) {
@@ -237,8 +241,8 @@ window.onload = () => {
 				case Status.Complete:
 					outputTextareaElement.className = "complete";
 					break;
-				case Status.Stop:
-					outputTextareaElement.className = "stop";
+				case Status.Break:
+					outputTextareaElement.className = "pause";
 					break;
 				case Status.Error:
 					outputTextareaElement.className = "error";
@@ -263,7 +267,7 @@ window.onload = () => {
 			return element.value < min ? min : element.value;
 		},
 		startInterval = () => {
-			executeCycleButtonElement.innerHTML = "stop execution";
+			executeCycleButtonElement.innerHTML = "pause execution";
 			intervalObj = setInterval(intervalFunction, cpms);
 			bool = true;
 		},
