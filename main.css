@@ -1,12 +1,109 @@
+#codeShowArea {
+	min-height: 2em;
+	max-height: 16em;
+}
+
+#inputShowArea {
+	height: 2em;
+}
+
+#tapeShowArea {
+	height: 2em;
+}
+
+.area {
+	padding: 4px;
+}
+
+.error {
+	font-weight: bold;
+}
+
+.io.area {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.main {
+	display: grid;
+	grid-template-columns: 3fr 2fr;
+}
+
+.scrollable {
+	overflow-x: scroll;
+	overflow-y: scroll;
+}
+
+.space-pre {
+	font-family: 'Courier New', Courier, monospace;
+	white-space: pre;
+}
+
+body {
+	padding: 8px;
+}
+
+button {
+	margin: 2px;
+	padding: 2px;
+}
+
+input,
+textarea {
+	border: 0;
+}
+
+input {
+	text-align: right;
+}
+
+textarea {
+	font-family: 'Courier New', Courier, monospace;
+	width: 100%;
+	height: 8em;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+	font-size: 16px;
+}
+
+/*table*/
+#testTableBody {
+	max-height: 16em;
+	overflow-y: scroll;
+}
+
+.testTableTr {
+	display: grid;
+	grid-template-columns: 5fr 5fr 2fr;
+}
+
+.testTableTd {
+	margin: 2px;
+	min-height: 1em;
+	max-height: 4em;
+	font-family: 'Courier New', Courier, monospace;
+	overflow-x: scroll;
+	overflow-y: scroll;
+	white-space: pre;
+}
+
 @media (prefers-color-scheme: light) {
 	body {
 		background: #fff;
 		color: #000;
 	}
 
+	button {
+		background: #eee;
+		border: solid #ddd 2px;
+	}
+
 	input,
 	textarea {
-		background: #e0e0e0;
+		background: #eee;
 	}
 
 	.error {
@@ -35,7 +132,7 @@
 	}
 
 	.testTableTd {
-		background: #e0e0e0;
+		background: #fff;
 	}
 
 	.testTableTd.complete {
@@ -53,38 +150,39 @@
 	}
 
 	::placeholder {
-		color: #88f;
+		color: #ccf;
 	}
 }
 
 @media (prefers-color-scheme: dark) {
 	body {
 		background: #222;
-		color: #ccc;
+		color: #ddd;
 	}
 
 	input,
 	textarea {
 		background: #000;
-		color: #ccc;
+		color: #ddd;
 	}
 
 	button {
 		color: #aaa;
-		background: #444;
+		background: #000;
+		border: solid #444 2px;
 	}
 
 	.error {
-		background: #844;
-		color: #400;
+		background: #300;
+		color: #f88;
 	}
 
 	.pause {
-		background: #442;
+		background: #330;
 	}
 
 	.complete {
-		background: #242;
+		background: #030;
 	}
 
 	.scrollable {
@@ -92,11 +190,11 @@
 	}
 
 	.information {
-		color: #ccc;
+		color: #ddd;
 	}
 
 	.information .target {
-		background: #e0e0e0;
+		background: #ddd;
 		color: #000;
 	}
 
@@ -109,104 +207,15 @@
 	}
 
 	.testTableTd.complete {
-		background: #242;
+		background: #030;
 	}
 
 	.testTableTd.error {
-		background: #844;
-		color: #400;
+		background: #300;
+		color: #f88;
 	}
 
 	::placeholder {
 		color: #448;
 	}
-}
-
-* {
-	padding: 0;
-	margin: 0;
-	font-size: 16px;
-}
-
-body {
-	padding: 8px;
-}
-
-input,
-textarea {
-	border: 0;
-}
-
-textarea {
-	font-family: 'Courier New', Courier, monospace;
-	width: 100%;
-	height: 8em;
-}
-
-input {
-	text-align: right;
-}
-
-button {
-	margin: 2px;
-	padding: 2px;
-	border: solid #888 2px;
-}
-
-.error {
-	font-weight: bold;
-}
-
-.io.area {
-	display: grid;
-	grid-template-columns: 50% 50%;
-}
-
-.scrollable {
-	overflow-x: scroll;
-	overflow-y: scroll;
-}
-
-.space-pre {
-	font-family: 'Courier New', Courier, monospace;
-	white-space: pre;
-}
-
-.area {
-	padding: 4px;
-}
-
-#codeShowArea {
-	min-height: 2em;
-	max-height: 16em;
-}
-
-#inputShowArea {
-	height: 2em;
-}
-
-#tapeShowArea {
-	height: 2em;
-}
-
-
-/*table*/
-#testTableBody {
-	max-height: 16em;
-	overflow-y: scroll;
-}
-
-.testTableTr {
-	display: grid;
-	grid-template-columns: 7fr 7fr 1fr;
-}
-
-.testTableTd {
-	margin: 2px;
-	min-height: 1em;
-	max-height: 4em;
-	font-family: 'Courier New', Courier, monospace;
-	overflow-x: scroll;
-	overflow-y: scroll;
-	white-space: pre;
 }
