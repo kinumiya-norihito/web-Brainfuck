@@ -168,7 +168,7 @@ class BrainfuckInterpreter {
 	}
 
 	get executionCount() {
-		return executionCount;
+		return this.#executionCount;
 	}
 	get status() {
 		return this.#status;
@@ -186,7 +186,9 @@ window.onload = () => {
 		executionLimit,
 		cpms,
 		intervalObj,
-		bool;
+		bool,
+		isMetaDown = false,
+		isFocus = false;
 
 	const
 		/*
@@ -286,6 +288,7 @@ window.onload = () => {
 		test = (testListJSON) => {
 			testTableBodyElement.innerHTML = "";
 			const testList = JSON.parse(testListJSON);
+			let testCount = 0, passTestCount = 0;
 			for (const testObj of testList) {
 				const
 					testTableTr = document.createElement("div"),
@@ -308,12 +311,14 @@ window.onload = () => {
 				testResultTd.innerHTML = testInterpreter.latestLog;
 				if (testInterpreter.output === testObj.output) {
 					testResultTd.className = "testTableTd complete";
+					passTestCount++;
 				}
 				else {
 					testResultTd.className = "testTableTd error";
 					if (testInterpreter.latestLog == "complete") testResultTd.innerHTML = "wrong output";
 				}
 				testTableBodyElement.append(testTableTr);
+				testCount++;
 			}
 		};
 	reset();

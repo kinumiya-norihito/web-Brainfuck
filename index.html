@@ -9,74 +9,76 @@
 </head>
 
 <body>
-	<div class="brainfuck area">
-		<div class="code area">
-			<span>code</span><br />
-			<textarea id="codeTextarea" placeholder=",>,>,.<.<."></textarea><br />
-		</div>
-	</div>
-	<div class="io area">
-		<div class="input area">
-			<span>input</span><br />
-			<textarea id="inputTextarea" placeholder="abc"></textarea><br />
-		</div>
-		<div class="output area">
-			<span>output</span><br />
-			<textarea id="outputTextarea" class="None" placeholder="cba" disabled></textarea><br />
-		</div>
-	</div>
-	<div class="control area">
-		<div class="button area">
-			<button id="executeButton">execute</button>
-			<button id="stepExecuteButton">execute only one step</button>
-			<button id="executeCycleButton">execute per 10ms</button><br />
-			<button id="resetButton">reset</button>
-		</div>
-	</div>
-	<div class="information area">
+	<div class="main area">
 		<div class="area">
-			<span>input</span><br />
-			<div class="scrollable space-pre" id="inputShowArea"></div>
-		</div>
-		<div class="area">
-			<span>tape</span><br />
-			<div class="scrollable space-pre" id="tapeShowArea"></div>
-		</div>
-		<div class="area">
-			<span>code</span><br />
-			<div class="scrollable space-pre" id="codeShowArea"></div>
-		</div>
-	</div>
-	<div class="other area">
-		<details class="area">
-			<summary>
-				config
-			</summary>
-			<div class="config area">
-				maximum execution times:<input id="executionLimitInput" type="number" min="1" size="8"
-					value="10000">times<br />
-				cycle time:<input id="cpmsInput" type="number" min="10" size="8" value="10">ms<br />
-			</div>
-		</details>
-		<details class="area">
-			<summary>
-				test
-			</summary>
-			<textarea id="testJSONTextarea">[{"input":"abc","output":"cba"},{"input":"012","output":"210"}]</textarea>
-			<button id="doTestButton">do test</button>
-			<div class="test">
-				<div id="testTable">
-					<div id="testTableHead">
-						<div class="testTableTr">
-							<div class="testTableTd">input</div>
-							<div class="testTableTd">output</div>
-							<div class="testTableTd">result</div>
-						</div>
-					</div>
-					<div id="testTableBody"></div>
+			<div class="brainfuck area">
+				<div class="code area">
+					<span>code</span><br />
+					<textarea id="codeTextarea" placeholder=",>,>,.<.<."></textarea><br />
 				</div>
 			</div>
-		</details>
+			<div class="io area">
+				<div class="input area">
+					<span>input</span><br />
+					<textarea id="inputTextarea" placeholder="abc"></textarea><br />
+				</div>
+				<div class="output area">
+					<span>output</span><br />
+					<textarea id="outputTextarea" class="None" placeholder="cba" readonly></textarea><br />
+				</div>
+			</div>
+			<div class="information area">
+				<div class="area">
+					<span>input</span><br />
+					<div class="scrollable space-pre" id="inputShowArea"></div>
+				</div>
+				<div class="area">
+					<span>tape</span><br />
+					<div class="scrollable space-pre" id="tapeShowArea"></div>
+				</div>
+				<div class="area">
+					<span>code</span><br />
+					<div class="scrollable space-pre" id="codeShowArea"></div>
+				</div>
+			</div>
+		</div>
+		<div class="area">
+			<div class="control area">
+				<div class="button area">
+					<button id="executeButton">execute</button>
+					<button id="stepExecuteButton">execute only one step</button>
+					<button id="executeCycleButton">execute per 10ms</button><br />
+					<button id="resetButton">reset</button>
+				</div>
+			</div>
+			<div class="other area">
+				<div class="config area">
+					maximum execution times:<input id="executionLimitInput" type="number" min="1" size="8"
+						value="10000">times<br />
+					cycle time:<input id="cpmsInput" type="number" min="10" size="8" value="10">ms<br />
+				</div>
+				<details class="test area">
+					<summary>
+						test
+					</summary>
+					<textarea
+						id="testJSONTextarea">[{"input":"abc","output":"cba"},{"input":"012","output":"210"}]</textarea>
+					<button id="doTestButton">do test</button>
+					<div class="test">
+						<div id="testTable">
+							<div id="testTableHead">
+								<div class="testTableTr">
+									<div class="testTableTd">input</div>
+									<div class="testTableTd">output</div>
+									<div class="testTableTd">result</div>
+								</div>
+							</div>
+							<div id="testTableBody"></div>
+						</div>
+					</div>
+				</details>
+			</div>
+		</div>
 	</div>
 </body>
 
