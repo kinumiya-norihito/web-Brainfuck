@@ -211,6 +211,7 @@ window.onload = () => {
 		//config
 		executionLimitInputElement = document.getElementById("executionLimitInput"),
 		cpmsInputElement = document.getElementById("cpmsInput"),
+		deleteNonCommandCharButtonElement = document.getElementById("deleteNonCommandCharButton"),
 		//test
 		testJSONTextareaElement = document.getElementById("testJSONTextarea"),
 		doTestButtonElement = document.getElementById("doTestButton"),
@@ -320,6 +321,9 @@ window.onload = () => {
 				testTableBodyElement.append(testTableTr);
 				testCount++;
 			}
+		},
+		deleteNonCommandChar = (str) => {
+			return str.replace(/[^<>\[\],.+\-:]/g, "");
 		};
 	reset();
 
@@ -345,6 +349,11 @@ window.onload = () => {
 	});
 	cpmsInputElement.addEventListener("blur", () => {
 		if (cpmsInputElement.value < 10) cpmsInputElement.value = 10;
+	});
+	deleteNonCommandCharButtonElement.addEventListener("click", () => {
+		if (confirm("Are you sure you want to run it?\nThis operation cannot be undone.")) {
+			codeTextareaElement.value = deleteNonCommandChar(codeTextareaElement.value);
+		}
 	});
 
 	//test
