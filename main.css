@@ -49,7 +49,8 @@ button {
 }
 
 input,
-textarea {
+textarea,
+select {
 	border: 0;
 }
 
@@ -106,7 +107,8 @@ p {
 	}
 
 	input,
-	textarea {
+	textarea,
+	select {
 		background: #eee;
 	}
 
@@ -169,7 +171,8 @@ p {
 	}
 
 	input,
-	textarea {
+	textarea,
+	select {
 		background: #000;
 		color: #ddd;
 	}

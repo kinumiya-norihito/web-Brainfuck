@@ -1,3 +1,6 @@
+const
+	SIZE = 256;
+
 class Status {
 	static None = Symbol(0);
 	static Complete = Symbol(1);
@@ -187,8 +190,7 @@ window.onload = () => {
 		cpms,
 		intervalObj,
 		bool,
-		isMetaDown = false,
-		isFocus = false;
+		numberBase;
 
 	const
 		/*
@@ -212,6 +214,7 @@ window.onload = () => {
 		executionLimitInputElement = document.getElementById("executionLimitInput"),
 		cpmsInputElement = document.getElementById("cpmsInput"),
 		deleteNonCommandCharButtonElement = document.getElementById("deleteNonCommandCharButton"),
+		numberBaseElement = document.getElementById("numberBase"),
 		//test
 		testJSONTextareaElement = document.getElementById("testJSONTextarea"),
 		doTestButtonElement = document.getElementById("doTestButton"),
@@ -227,6 +230,8 @@ window.onload = () => {
 
 			executionLimit = getValue(executionLimitInputElement, 1);
 			cpms = getValue(cpmsInputElement, 10);
+			//hoge
+			numberBase = numberBaseElement.value;
 
 			bool = false;
 			/*show*/
@@ -255,13 +260,13 @@ window.onload = () => {
 			//input
 			inputShowAreaElement.innerHTML = "";
 			for (let i = 0; i < interpreter.inputBytes.length; i++) {
-				inputShowAreaElement.innerHTML += `${i ? " " : "<span class=\"target\">"}${(256 + interpreter.inputBytes[i]).toString(16).substring(1, 3)}${i ? " " : "</span>"}`;
+				inputShowAreaElement.innerHTML += `${i ? " " : "<span class=\"target\">"}${toBaseString(interpreter.inputBytes[i])}${i ? " " : "</span>"}`;
 			}
 			//tape
 			tapeShowAreaElement.innerHTML = "";
 			for (let i = 0; i < interpreter.tape.length; i++) {
 				const bool = i === interpreter.tp;
-				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${bool ? "<span class=\"target\">" : ""}${(256 + interpreter.tape[i]).toString(16).substring(1, 3)}${bool ? "</span>" : ""}`;
+				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${bool ? "<span class=\"target\">" : ""}${toBaseString(interpreter.tape[i])}${bool ? "</span>" : ""}`;
 			}
 			//code
 			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc)}<span class="target">${interpreter.code.substring(interpreter.pc, interpreter.pc + 1)}</span>${interpreter.code.substring(interpreter.pc + 1)}<br/><br/>`;
@@ -324,6 +329,9 @@ window.onload = () => {
 		},
 		deleteNonCommandChar = (str) => {
 			return str.replace(/[^<>\[\],.+\-:]/g, "");
+		},
+		toBaseString = (x) => {
+			return ((numberBase ** ((SIZE - 1).toString(numberBase).length)) + x).toString(numberBase).substring(1, 1 + (SIZE - 1).toString(numberBase).length);
 		};
 	reset();
 
