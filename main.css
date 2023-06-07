@@ -116,6 +116,10 @@ p {
 		border-left: solid 4px #ccc;
 	}
 
+	.unused {
+		background: #ccf;
+	}
+
 	.error {
 		background: #f88;
 		color: #400;
@@ -185,6 +189,10 @@ p {
 
 	p {
 		border-left: solid 4px #000;
+	}
+
+	.unused {
+		background: #00c;
 	}
 
 	.error {
