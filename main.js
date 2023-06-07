@@ -13,6 +13,7 @@ class BrainfuckInterpreter {
 	#pc;
 	#tape;
 	#tp;
+	#tapePassed;
 
 	#inputBytes;
 	#output;
@@ -27,6 +28,7 @@ class BrainfuckInterpreter {
 		this.#pc = -1;
 		this.#tape = [0];
 		this.#tp = 0;
+		this.#tapePassed = [1];
 
 		this.#createInputBytes(input);
 		this.#output = "";
@@ -56,15 +58,18 @@ class BrainfuckInterpreter {
 			this.#executionCount++;
 			switch (this.#code[this.#pc]) {
 				case '+':
+					this.#tapePassed[this.#tp] = 0;
 					this.#tape[this.#tp] = (this.#tape[this.#tp] + 1) % 256;
 					break;
 				case '-':
+					this.#tapePassed[this.#tp] = 0;
 					this.#tape[this.#tp] = (this.#tape[this.#tp] + 255) % 256;
 					break;
 				case '>':
 					this.#tp++;
 					if (this.#tape[this.#tp] == undefined) {
 						this.#tape[this.#tp] = 0;
+						this.#tapePassed[this.#tp] = 1;
 					}
 					break;
 				case '<':
@@ -75,6 +80,7 @@ class BrainfuckInterpreter {
 					}
 					break;
 				case '[':
+					this.#tapePassed[this.#tp] = 0;
 					if (this.#tape[this.#tp] == 0) {
 						lv++;
 						while (lv) {
@@ -88,6 +94,7 @@ class BrainfuckInterpreter {
 					}
 					break;
 				case ']':
+					this.#tapePassed[this.#tp] = 0;
 					lv--;
 					while (lv) {
 						this.#pc--;
@@ -100,9 +107,11 @@ class BrainfuckInterpreter {
 					this.#pc--;
 					break;
 				case '.':
+					this.#tapePassed[this.#tp] = 0;
 					this.#ruiString += `%${(256 + this.#tape[this.#tp]).toString(16).substring(1, 3)}`;
 					break;
 				case ',':
+					this.#tapePassed[this.#tp] = 0;
 					if (this.inputBytes.length > 0) {
 						this.#tape[this.#tp] = this.inputBytes[0];
 						this.inputBytes.shift();
@@ -148,12 +157,19 @@ class BrainfuckInterpreter {
 	get code() {
 		return this.#code;
 	}
+
 	get pc() {
 		return this.#pc;
 	}
+
 	get tape() {
 		return this.#tape;
 	}
+
+	get tapaPassed() {
+		return this.#tapePassed;
+	}
+
 	get tp() {
 		return this.#tp;
 	}
@@ -223,21 +239,20 @@ window.onload = () => {
 			functions
 		*/
 		reset = () => {
+			reset_exec();
+			reset_config();
+		},
+		reset_exec = () => {
 			stopInterval();
 			code = codeTextareaElement.value;
 			input = inputTextareaElement.value;
 			interpreter = new BrainfuckInterpreter(code, input);
-
+			testTableBodyElement.innerHTML = "";
+		},
+		reset_config = () => {
 			executionLimit = getValue(executionLimitInputElement, 1);
 			cpms = getValue(cpmsInputElement, 10);
-			//hoge
 			numberBase = numberBaseElement.value;
-
-			bool = false;
-			/*show*/
-			executeCycleButtonElement.innerHTML = `execute per ${cpms}ms`;
-			//test
-			testTableBodyElement.innerHTML = "";
 			show_information();
 		},
 		show_information = () => {
@@ -265,8 +280,9 @@ window.onload = () => {
 			//tape
 			tapeShowAreaElement.innerHTML = "";
 			for (let i = 0; i < interpreter.tape.length; i++) {
-				const bool = i === interpreter.tp;
-				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${bool ? "<span class=\"target\">" : ""}${toBaseString(interpreter.tape[i])}${bool ? "</span>" : ""}`;
+				const b0 = i === interpreter.tp;
+				const b1 = interpreter.tapaPassed[i];
+				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${b1 ? "<span class=\"unused\">" : ""}${b0 ? "<span class=\"target\">" : ""}${toBaseString(interpreter.tape[i])}${b0 ? "</span>" : ""}${b1 ? "</span>" : ""}`;
 			}
 			//code
 			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc)}<span class="target">${interpreter.code.substring(interpreter.pc, interpreter.pc + 1)}</span>${interpreter.code.substring(interpreter.pc + 1)}<br/><br/>`;
@@ -352,11 +368,23 @@ window.onload = () => {
 	});
 
 	//config
-	executionLimitInputElement.addEventListener("blur", () => {
-		if (executionLimitInputElement.value < 1) executionLimitInputElement.value = 10000;
+	numberBaseElement.addEventListener("change", () => {
+		reset_config();
 	});
-	cpmsInputElement.addEventListener("blur", () => {
-		if (cpmsInputElement.value < 10) cpmsInputElement.value = 10;
+	executionLimitInputElement.addEventListener("change", () => {
+		if (executionLimitInputElement.value < 1) executionLimitInputElement.value = executionLimit;
+		reset_config();
+	});
+	cpmsInputElement.addEventListener("change", () => {
+		if (cpmsInputElement.value < 10) cpmsInputElement.value = cpms;
+		if (bool) {
+			stopInterval();
+			reset_config();
+			startInterval();
+		}
+		else {
+			reset_config();
+		}
 	});
 	deleteNonCommandCharButtonElement.addEventListener("click", () => {
 		if (confirm("Are you sure you want to run it?\nThis operation cannot be undone.")) {
