@@ -275,7 +275,7 @@ window.onload = () => {
 			//input
 			inputShowAreaElement.innerHTML = "";
 			for (let i = 0; i < interpreter.inputBytes.length; i++) {
-				inputShowAreaElement.innerHTML += `${i ? " " : "<span class=\"target\">"}${toBaseString(interpreter.inputBytes[i])}${i ? " " : "</span>"}`;
+				inputShowAreaElement.innerHTML += `${i ? " " : "<span class=\"target\">"}${toBaseString(interpreter.inputBytes[i])}${i ? "" : "</span>"}`;
 			}
 			//tape
 			tapeShowAreaElement.innerHTML = "";
