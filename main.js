@@ -19,22 +19,22 @@ class BrainfuckInterpreter {
 	#output;
 	#ruiString;
 
-	#executionCount;
+	#interpretedCount;
 	#status;
 	#latestLog;
 
 	constructor(code, input) {
 		this.#code = code;
-		this.#pc = -1;
+		this.#pc = 0;
 		this.#tape = [0];
 		this.#tp = 0;
-		this.#tapePassed = [1];
+		this.#tapePassed = [0];
 
 		this.#createInputBytes(input);
 		this.#output = "";
 		this.#ruiString = "";
 
-		this.#executionCount = 0;
+		this.#interpretedCount = 0;
 		this.#status = Status.None;
 	}
 
@@ -54,22 +54,20 @@ class BrainfuckInterpreter {
 		};
 
 		for (let i = 0; i < lim; i++) {
-			this.#pc++;
-			this.#executionCount++;
 			switch (this.#code[this.#pc]) {
 				case '+':
-					this.#tapePassed[this.#tp] = 0;
+					this.#tapePassed[this.#tp]++;
 					this.#tape[this.#tp] = (this.#tape[this.#tp] + 1) % 256;
 					break;
 				case '-':
-					this.#tapePassed[this.#tp] = 0;
+					this.#tapePassed[this.#tp]++;
 					this.#tape[this.#tp] = (this.#tape[this.#tp] + 255) % 256;
 					break;
 				case '>':
 					this.#tp++;
 					if (this.#tape[this.#tp] == undefined) {
 						this.#tape[this.#tp] = 0;
-						this.#tapePassed[this.#tp] = 1;
+						this.#tapePassed[this.#tp] = 0;
 					}
 					break;
 				case '<':
@@ -80,7 +78,7 @@ class BrainfuckInterpreter {
 					}
 					break;
 				case '[':
-					this.#tapePassed[this.#tp] = 0;
+					this.#tapePassed[this.#tp]++;
 					if (this.#tape[this.#tp] == 0) {
 						lv++;
 						while (lv) {
@@ -94,7 +92,7 @@ class BrainfuckInterpreter {
 					}
 					break;
 				case ']':
-					this.#tapePassed[this.#tp] = 0;
+					this.#tapePassed[this.#tp]++;
 					lv--;
 					while (lv) {
 						this.#pc--;
@@ -107,11 +105,11 @@ class BrainfuckInterpreter {
 					this.#pc--;
 					break;
 				case '.':
-					this.#tapePassed[this.#tp] = 0;
+					this.#tapePassed[this.#tp]++;
 					this.#ruiString += `%${(256 + this.#tape[this.#tp]).toString(16).substring(1, 3)}`;
 					break;
 				case ',':
-					this.#tapePassed[this.#tp] = 0;
+					this.#tapePassed[this.#tp]++;
 					if (this.inputBytes.length > 0) {
 						this.#tape[this.#tp] = this.inputBytes[0];
 						this.inputBytes.shift();
@@ -129,6 +127,8 @@ class BrainfuckInterpreter {
 				this.#createLog("complete", Status.Complete);
 				return "complete";
 			}
+			this.#pc++;
+			this.#interpretedCount++;
 		}
 		this.#createLog("execution limit", Status.None);
 		return;
@@ -186,8 +186,10 @@ class BrainfuckInterpreter {
 		return this.#output;
 	}
 
-	get executionCount() {
-		return this.#executionCount;
+	get interpretedCount() {
+		if (this.#status == Status.Complete)
+			return this.#interpretedCount;
+		return undefined;
 	}
 	get status() {
 		return this.#status;
@@ -226,6 +228,7 @@ window.onload = () => {
 		inputShowAreaElement = document.getElementById("inputShowArea"),
 		tapeShowAreaElement = document.getElementById("tapeShowArea"),
 		codeShowAreaElement = document.getElementById("codeShowArea"),
+		interpretedCountElement = document.getElementById("interpretedCount"),
 		//config
 		executionLimitInputElement = document.getElementById("executionLimitInput"),
 		cpmsInputElement = document.getElementById("cpmsInput"),
@@ -282,10 +285,13 @@ window.onload = () => {
 			for (let i = 0; i < interpreter.tape.length; i++) {
 				const b0 = i === interpreter.tp;
 				const b1 = interpreter.tapaPassed[i];
-				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${b1 ? "<span class=\"unused\">" : ""}${b0 ? "<span class=\"target\">" : ""}${toBaseString(interpreter.tape[i])}${b0 ? "</span>" : ""}${b1 ? "</span>" : ""}`;
+				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${b1 == 0 ? "<span class=\"unused\">" : ""}${b0 ? "<span class=\"target\">" : ""}${toBaseString(interpreter.tape[i])}${b0 == 0 ? "</span>" : ""}${b1 ? "</span>" : ""}`;
 			}
 			//code
-			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc + 1)}<span class="target">${interpreter.code.substring(interpreter.pc + 1, interpreter.pc + 2)}</span>${interpreter.code.substring(interpreter.pc + 2)}<br/><br/>`;
+			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc)}<span class="target">${interpreter.code.substring(interpreter.pc, interpreter.pc + 1)}</span>${interpreter.code.substring(interpreter.pc + 1)}<br/><br/>`;
+			//interpreted count
+			(x => interpretedCountElement.innerHTML = x == undefined ? "undecided" : x)(interpreter.interpretedCount);
+
 		},
 		getValue = (element, min) => {
 			return element.value < min ? min : element.value;
