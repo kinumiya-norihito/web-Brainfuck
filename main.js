@@ -121,6 +121,7 @@ class BrainfuckInterpreter {
 					break;
 				case ':':
 					this.#createLog("break", Status.Break);
+					this.#pc++;
 					return;
 			}
 			if (!this.#code[this.#pc]) {
