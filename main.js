@@ -285,7 +285,7 @@ window.onload = () => {
 				tapeShowAreaElement.innerHTML += `${i ? " " : ""}${b1 ? "<span class=\"unused\">" : ""}${b0 ? "<span class=\"target\">" : ""}${toBaseString(interpreter.tape[i])}${b0 ? "</span>" : ""}${b1 ? "</span>" : ""}`;
 			}
 			//code
-			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc)}<span class="target">${interpreter.code.substring(interpreter.pc, interpreter.pc + 1)}</span>${interpreter.code.substring(interpreter.pc + 1)}<br/><br/>`;
+			codeShowAreaElement.innerHTML = `${interpreter.code.substring(0, interpreter.pc + 1)}<span class="target">${interpreter.code.substring(interpreter.pc + 1, interpreter.pc + 2)}</span>${interpreter.code.substring(interpreter.pc + 2)}<br/><br/>`;
 		},
 		getValue = (element, min) => {
 			return element.value < min ? min : element.value;
