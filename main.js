@@ -244,9 +244,9 @@ window.onload = () => {
 		reset = () => {
 			reset_exec();
 			reset_config();
+			stopInterval();
 		},
 		reset_exec = () => {
-			stopInterval();
 			code = codeTextareaElement.value;
 			input = inputTextareaElement.value;
 			interpreter = new BrainfuckInterpreter(code, input);
@@ -297,14 +297,18 @@ window.onload = () => {
 			return element.value < min ? min : element.value;
 		},
 		startInterval = () => {
-			executeCycleButtonElement.innerHTML = "pause execution";
-			intervalObj = setInterval(intervalFunction, cpms);
-			bool = true;
+			if (!bool) {
+				executeCycleButtonElement.innerHTML = "pause execution";
+				intervalObj = setInterval(intervalFunction, cpms);
+				bool = true;
+			}
 		},
 		stopInterval = () => {
-			executeCycleButtonElement.innerHTML = `execute per ${cpms}ms`;
-			clearInterval(intervalObj);
-			bool = false;
+			if (bool) {
+				executeCycleButtonElement.innerHTML = `execute per ${cpms}ms`;
+				clearInterval(intervalObj);
+				bool = false;
+			}
 		},
 		intervalFunction = () => {
 			interpreter.exexute(1);
