@@ -68,6 +68,11 @@ p {
 	padding: 4px;
 }
 
+th,
+td {
+	padding: 0.2em 0.1em;
+}
+
 * {
 	padding: 0;
 	margin: 0;
